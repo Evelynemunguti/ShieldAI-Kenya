@@ -1,0 +1,38 @@
+.verify-page {
+  padding: 100px 10%;
+}
+
+.verify-page h1 {
+  color: #0A2342;
+}
+
+.verify-page input {
+  width: 100%;
+  padding: 15px;
+  margin-top: 20px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.verify-page button {
+  margin-top: 20px;
+  background: #FFC857;
+  color: #0A2342;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.result-card {
+  margin-top: 30px;
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,.08);
+}
+
+.high-risk {
+  color: #DC3545;
+  font-weight: bold;
+}

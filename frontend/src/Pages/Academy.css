@@ -1,0 +1,27 @@
+.academy-page {
+  padding: 100px 10%;
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+  margin-top: 40px;
+}
+
+.course-card {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,.08);
+}
+
+.course-card button {
+  margin-top: 15px;
+  background: #FFC857;
+  color: #0A2342;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 10px;
+  cursor: pointer;
+}
