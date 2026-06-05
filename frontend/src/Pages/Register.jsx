@@ -6,7 +6,7 @@ export default function Register() {
 
       <div className="auth-card">
 
-        <h1>Create Account</h1>
+        <h2>Create Account</h2>
 
         <input
           type="text"

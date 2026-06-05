@@ -6,7 +6,7 @@ export default function Login() {
 
       <div className="auth-card">
 
-        <h1>Login</h1>
+        <h2>Login</h2>
 
         <input
           type="email"

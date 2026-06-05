@@ -15,7 +15,7 @@ export default function Home() {
 
           <p>
             AI-powered scam detection,
-            website verification,
+            website verification
             and digital safety education.
           </p>
 
