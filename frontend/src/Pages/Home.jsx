@@ -1,11 +1,10 @@
 import "./Home.css";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
+
 
 export default function Home() {
   return (
     <>
-      <Navbar />
+     
 
       {/* Hero */}
       <section className="hero">
@@ -110,7 +109,7 @@ export default function Home() {
 
       </section>
 
-      <Footer />
+      
     </>
   );
 }
