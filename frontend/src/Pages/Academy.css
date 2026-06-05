@@ -1,6 +1,9 @@
 .academy-page {
   padding: 100px 10%;
 }
+.academy-page h1 {
+  color: #0A2342;
+}
 
 .course-grid {
   display: grid;

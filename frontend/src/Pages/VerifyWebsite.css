@@ -1,7 +1,9 @@
 .website-page {
   padding: 100px 10%;
 }
-
+.website-page h1 {
+  color: #0A2342;
+}
 .website-page input {
   width: 100%;
   padding: 15px;
