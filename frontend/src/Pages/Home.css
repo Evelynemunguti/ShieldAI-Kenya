@@ -1,3 +1,4 @@
+
 * {
   margin: 0;
   padding: 0;
@@ -7,10 +8,11 @@
 body {
   background: #F5F7FA;
   font-family: Arial, sans-serif;
+  width: 100%;
+  overflow-x: hidden; /* Prevents awkward horizontal shifting on mobile */
 }
 
-/* Hero */
-
+/* --- Hero Section --- */
 .hero {
   background: #0A2342;
   color: white;
@@ -21,47 +23,54 @@ body {
 .hero h1 {
   font-size: 4rem;
   color: #FFC857;
+  line-height: 1.2;
 }
 
 .hero h3 {
   margin: 20px 0;
+  font-size: 1.5rem;
 }
 
 .hero p {
   max-width: 700px;
   margin: auto;
   line-height: 1.8;
+  font-size: 1.1rem;
 }
 
 .hero-buttons {
   margin-top: 30px;
+  display: flex; /* Helps align links smoothly */
+  justify-content: center;
+  flex-wrap: wrap; /* Allows buttons to stack on top of each other if space runs out */
 }
 
 .hero button {
   padding: 15px 30px;
   margin: 10px;
-
   border: none;
   border-radius: 10px;
-
   background: #FFC857;
   color: #0A2342;
-
   font-weight: bold;
   cursor: pointer;
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.hero button:active {
+  transform: scale(0.98); /* Native press feel for mobile touch */
 }
 
 .secondary-btn {
   background: white !important;
 }
 
-/* Stats */
-
+/* --- Statistics Section --- */
 .stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr); /* 4 columns on desktop */
   gap: 20px;
-
   padding: 80px 8%;
   background-color: #FFC857;
 }
@@ -70,18 +79,16 @@ body {
   background: white;
   padding: 30px;
   text-align: center;
-
   border-radius: 15px;
-
   box-shadow: 0 5px 20px rgba(0,0,0,.08);
 }
 
 .stat-card h2 {
   color: #0A2342;
+  font-size: 2.2rem;
 }
 
-/* Features */
-
+/* --- Features Section --- */
 .features {
   padding: 100px 8%;
   background-color: #0A2342;
@@ -92,28 +99,31 @@ body {
   margin-bottom: 50px;
   font-weight: bold;
   color: #FFC857;
+  font-size: 2.5rem;
 }
 
 .feature-grid {
   display: grid;
-  grid-template-columns: repeat(3,1fr);
+  grid-template-columns: repeat(3, 1fr); /* 3 columns on desktop */
   gap: 25px;
 }
 
 .feature-card {
   background: white;
-
   padding: 40px;
   text-align: center;
-
   border-radius: 15px;
-
-
   box-shadow: 0 5px 20px rgba(0,0,0,.08);
+  font-size: 1.5rem; /* Resizes safety emojis slightly */
 }
 
-/* Alerts */
+.feature-card h3 {
+  margin-top: 15px;
+  font-size: 1.25rem;
+  color: #0A2342;
+}
 
+/* --- Alerts Section --- */
 .alerts {
   padding: 100px 8%;
   background-color: #FFC857;
@@ -123,17 +133,182 @@ body {
   text-align: center;
   margin-bottom: 40px;
   font-weight: bold;
+  font-size: 2.5rem;
 }
 
 .alert-card {
   background: white;
-
   border-left: 6px solid #0A2342;
-
   margin-bottom: 20px;
   padding: 25px;
-
   border-radius: 10px;
-
   box-shadow: 0 5px 15px rgba(0,0,0,.08);
+  font-size: 1.1rem;
+  color: #0A2342;
+  font-weight: 600;
+}
+
+
+/* Responsiveness */
+
+/* Tablet & Smaller Desktop Adjustments (Under 992px) */
+@media (max-width: 992px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr); /* Changes 4 columns to a clean 2x2 grid */
+  }
+
+  .feature-grid {
+    grid-template-columns: repeat(2, 1fr); /* Changes 3 columns to a clean 2x3 grid */
+  }
+}
+
+/* Mobile Devices Adjustments (Under 600px) */
+@media (max-width: 600px) {
+  /* Hero typography resizing so headers don't break lines awkwardly */
+  .hero {
+    padding: 80px 15px; /* Slightly reduced padding */
+  }
+
+  .hero h1 {
+    font-size: 2.5rem; /* Downscaled from 4rem */
+  }
+
+  .hero h3 {
+    font-size: 1.2rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .hero-buttons {
+    flex-direction: column; /* Force buttons to stack on top of each other */
+    align-items: center;
+    width: 100%;
+  }
+
+  .hero-buttons a, 
+  .hero button {
+    width: 100%; /* Full-width mobile buttons are much easier to tap */
+    max-width: 300px;
+    margin: 6px 0;
+  }
+
+  /* Sections outer padding updates to gain screen real estate */
+  .stats, .features, .alerts {
+    padding: 60px 5%;
+  }
+
+  .features h2, .alerts h2 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+
+  /* Collapse grids to single-column blocks so content expands vertically */
+  .stats {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .stat-card {
+    padding: 20px;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .feature-card {
+    padding: 30px 20px;
+  }
+  
+  .alert-card {
+    padding: 20px;
+    font-size: 1rem;
+  }
+}
+
+/* Mobile Devices Adjustments (Under 600px) */
+@media (max-width: 600px) {
+  
+  /* Hero typography resizing */
+  .hero {
+    padding: 80px 15px;
+  }
+
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero h3 {
+    font-size: 1.2rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .hero-buttons a, 
+  .hero button {
+    width: 100%;
+    max-width: 300px;
+    margin: 6px 0;
+  }
+
+  /* Reduce section outer padding to maximize side-by-side card space */
+  .stats, .features, .alerts {
+    padding: 50px 4%;
+  }
+
+  .features h2, .alerts h2 {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+  }
+
+  /* 2 CARDS PER ROW FOR STATS */
+  .stats {
+    grid-template-columns: repeat(2, 1fr); /* Forces a clean 2x2 grid */
+    gap: 12px; /* Tighter gap so cards have more room */
+  }
+
+  .stat-card {
+    padding: 15px 10px; /* Reduced padding so text doesn't overflow */
+  }
+
+  .stat-card h2 {
+    font-size: 1.6rem; /* Slightly smaller numbers to fit perfectly */
+  }
+
+  .stat-card p {
+    font-size: 0.85rem;
+  }
+
+  /* 2 CARDS PER ROW FOR FEATURES */
+  .feature-grid {
+    grid-template-columns: repeat(2, 1fr); /* Forces a clean 2x3 grid */
+    gap: 12px;
+  }
+
+  .feature-card {
+    padding: 20px 10px; /* Snug padding for grid balance */
+    font-size: 1.3rem; /* Slightly smaller emojis */
+  }
+  
+  .feature-card h3 {
+    font-size: 0.95rem; /* Ensures long feature titles fit on one or two lines */
+    margin-top: 10px;
+  }
+  
+  /* Alerts look best staying full width as they contain text sentences */
+  .alert-card {
+    padding: 20px;
+    font-size: 1rem;
+  }
 }
