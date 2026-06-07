@@ -1,13 +1,25 @@
+
 .academy-page {
   padding: 100px 10%;
-}
-.academy-page h1 {
-  color: #0A2342;
+  max-width: 1200px; 
+  margin: 0 auto;
 }
 
+.academy-page h1 {
+  color: #0A2342;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.academy-page p {
+  color: #555;
+  font-size: 1.1rem;
+}
+
+/* Desktop Grid Configuration */
 .course-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr); /* 2 columns on desktop */
   gap: 25px;
   margin-top: 40px;
 }
@@ -18,14 +30,99 @@
   border-radius: 15px;
   box-shadow: 0 5px 20px rgba(0,0,0,.08);
   color: black;
+  display: flex;
+  flex-direction: column; /* Allows us to push the button to the bottom seamlessly */
+  justify-content: space-between;
+}
+
+.course-card h3 {
+  color: #0A2342;
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+.course-card p {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 20px;
 }
 
 .course-card button {
-  margin-top: 15px;
   background: #FFC857;
   color: #0A2342;
   border: none;
   padding: 12px 25px;
   border-radius: 10px;
   cursor: pointer;
+  font-weight: bold;
+  align-self: flex-start; /* Keeps the button from stretching full width on desktop */
+  transition: background 0.2s, transform 0.1s;
+}
+
+.course-card button:active {
+  transform: scale(0.98); /* Native press feel for mobile touch */
+}
+
+
+/* Responsiveness */
+
+/* Tablet & Smaller Screen Adjustments (Under 768px) */
+@media (max-width: 768px) {
+  .academy-page {
+    padding: 60px 6%; /* Reduces section padding so you have more screen room */
+  }
+
+  .academy-page h1 {
+    font-size: 2.2rem;
+  }
+}
+
+/* Mobile Screen Adjustments (Under 550px) */
+@media (max-width: 550px) {
+  .academy-page {
+    padding: 40px 4%; /* Extra screen space for mobile links */
+    text-align: center; /* Centers the header titles nicely on mobile */
+  }
+
+  .academy-page h1 {
+    font-size: 1.8rem;
+  }
+
+  .academy-page p {
+    font-size: 0.95rem;
+  }
+
+  /* KEEPING A CLEAN 2-COLUMN GRID (2x2 Grid Layout) */
+  .course-grid {
+    grid-template-columns: repeat(2, 1fr); /* Maintains 2 cards per row */
+    gap: 12px; /* Tightens the spacing so they fit comfortably side-by-side */
+    margin-top: 30px;
+  }
+
+  .course-card {
+    padding: 15px 12px; /* Snug padding to protect text layout from wrapping badly */
+    text-align: left; /* Keeps text left-aligned inside the card for readability */
+    border-radius: 12px;
+  }
+
+  .course-card h3 {
+    font-size: 1rem; /* Scales down the title size to fit small screens */
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+
+  .course-card p {
+    font-size: 0.8rem; /* Scales down descriptions so cards don't stretch excessively */
+    margin-bottom: 15px;
+    line-height: 1.4;
+  }
+
+  /* Full-width call to action buttons inside mobile cards make clicking effortless */
+  .course-card button {
+    align-self: stretch; 
+    text-align: center;
+    padding: 10px 5px;
+    font-size: 0.85rem;
+    margin-top: auto; /* Guarantees all buttons line up at the bottom of the row */
+  }
 }
