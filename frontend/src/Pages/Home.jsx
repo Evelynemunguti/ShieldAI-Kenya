@@ -9,7 +9,7 @@ export default function Home() {
       {/* Hero */}
       <section className="hero">
         <div className="hero-content">
-          <h1>ShieldAI Kenya</h1>
+          <h1>ShieldAI</h1>
 
           <h3>Detect. Verify. Protect.</h3>
 
