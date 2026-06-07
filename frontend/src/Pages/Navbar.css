@@ -1,12 +1,13 @@
+
 .navbar {
   background: #0A2342;
   color: white;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   padding: 20px 8%;
+  position: relative; /* Added to anchor mobile menu */
+  z-index: 100;
 }
 
 .logo {
@@ -19,6 +20,7 @@
   display: flex;
   gap: 2rem;
   list-style: none;
+  align-items: center;
 }
 
 .nav-links a {
@@ -43,6 +45,8 @@
   padding: 10px 20px;
   border-radius: 8px;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .signup-btn {
@@ -53,4 +57,125 @@
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* Hide mobile buttons wrapper on desktop */
+.mobile-buttons {
+  display: none;
+}
+
+/* Hamburger default state (hidden on desktop) */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.hamburger .bar {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 2px;
+}
+
+
+/* --- Mobile Responsive Styles (Breakpoint: 768px) --- */
+/* --- Side Card Mobile Responsive Styles (Breakpoint: 768px) --- */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 15px 5%; 
+    /* No longer needs position relative to anchor the menu, 
+       because the side card will anchor to the screen viewport */
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+    z-index: 102; /* Higher than the menu drawer so it stays clickable */
+  }
+
+  /* Animated Hamburger to 'X' */
+  .hamburger.open .bar:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+    background-color: #FFC857; /* Changes color when open for better visibility */
+  }
+  .hamburger.open .bar:nth-child(2) {
+    opacity: 0;
+  }
+  .hamburger.open .bar:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+    background-color: #FFC857;
+  }
+
+  /* SLEEK SIDE CARD DRAWER */
+  .nav-links {
+    position: fixed; /* Fixes it relative to the mobile screen */
+    top: 0;
+    right: 0;
+    bottom: 0;
+    
+    width: 280px; /* Adjust this width to make the card wider or narrower */
+    max-width: 80%; /* Ensures it never completely takes over tiny screens */
+    height: 100vh;
+    background: #0A2342;
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.3);
+    
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding-top: 80px; /* Pushes links down so they don't sit under the hamburger */
+    gap: 0;
+    z-index: 101;
+
+    /* Hide by sliding it completely off-screen to the right */
+    transform: translateX(100%);
+    transition: transform 0.4s ease-in-out;
+  }
+
+  /* When menu is toggled active, slide it into view */
+  .nav-links.active {
+    transform: translateX(0);
+  }
+
+  .nav-links li {
+    text-align: left; /* Left-aligned text looks cleaner in a side card */
+    padding: 0 30px;
+  }
+
+  .nav-links a {
+    display: block;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    width: 100%;
+    font-size: 1.1rem;
+  }
+
+  /* Bottom-aligned CTAs inside the side card */
+  .mobile-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 30px 0;
+    margin-top: auto; /* Pushes the buttons to the bottom of the side card */
+    margin-bottom: 40px;
+  }
+
+  .mobile-buttons .login-btn,
+  .mobile-buttons .signup-btn {
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+  }
 }
