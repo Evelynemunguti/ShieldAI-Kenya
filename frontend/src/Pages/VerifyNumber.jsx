@@ -1,35 +1,3 @@
-// import "./VerifyNumber.css";
-
-// export default function VerifyNumber() {
-//   return (
-//     <div className="verify-page">
-//       <h1>Verify Phone Number</h1>
-
-//       <p>
-//         Check whether a phone number has been reported for scams.
-//       </p>
-
-//       <input
-//         type="text"
-//         placeholder="Enter phone number..."
-//       />
-
-//       <button>Verify Number</button>
-
-//       <div className="result-card">
-//         <h2>Verification Result</h2>
-
-//         <p>Phone Number: 0712345678</p>
-
-//         <p>Reports: 17</p>
-
-//         <p className="high-risk">
-//           Risk Level: HIGH
-//         </p>
-//       </div>
-//     </div>
-//   );
-// }
 
 import { useState } from "react";
 import "./VerifyNumber.css";
@@ -39,41 +7,79 @@ export default function VerifyNumber() {
   const [result, setResult] = useState(null);
 
   const checkNumber = () => {
+    if (!phoneNumber.trim()) {
+      alert("Please enter a phone number");
+      return;
+    }
+
     const scamNumbers = [
       "0712345678",
       "0700000000",
       "0799999999",
-      "0111111111"
+      "0111111111",
     ];
 
-    const suspiciousPrefixes = [
-      "0700",
-      "0712"
-    ];
+    const suspiciousPrefixes = ["0700", "0712"];
 
     let risk = "SAFE";
     let reports = 0;
-    let score = 0;
+    let score = 5;
+    const reasons = [];
 
+    // 1. Exact scam numbers
     if (scamNumbers.includes(phoneNumber)) {
       risk = "HIGH RISK";
       reports = Math.floor(Math.random() * 50) + 10;
       score = 90;
-    } else {
-      suspiciousPrefixes.forEach((prefix) => {
-        if (phoneNumber.startsWith(prefix)) {
-          risk = "SUSPICIOUS";
-          reports = Math.floor(Math.random() * 10) + 1;
-          score = 50;
-        }
-      });
+      reasons.push("Known scam number");
+    }
+
+    // 2. Prefix check
+    if (
+      suspiciousPrefixes.some((prefix) =>
+        phoneNumber.startsWith(prefix)
+      )
+    ) {
+      risk = "SUSPICIOUS";
+      score = Math.max(score, 50);
+      reasons.push("Suspicious number prefix");
+    }
+
+    // 3. Length check
+    if (
+      phoneNumber.length < 10 ||
+      phoneNumber.length > 12
+    ) {
+      risk = "SUSPICIOUS";
+      score = Math.max(score, 60);
+      reasons.push("Abnormal phone number length");
+    }
+
+    // 4. Repeated digits
+    if (/(\d)\1{6,}/.test(phoneNumber)) {
+      risk = "HIGH RISK";
+      score = 95;
+      reasons.push("Repetitive digit pattern detected");
     }
 
     setResult({
       number: phoneNumber,
       risk,
       reports,
-      score
+      score,
+      reasons,
+    });
+  };
+
+  const reportNumber = () => {
+    alert("Number reported successfully!");
+
+    console.log({
+      reportType: "phone",
+      number: result?.number,
+      risk: result?.risk,
+      score: result?.score,
+      source: "Verify Number",
     });
   };
 
@@ -82,12 +88,12 @@ export default function VerifyNumber() {
       <h1>Verify Phone Number</h1>
 
       <p>
-        Check whether a phone number has been reported for scams.
+        Check whether a phone number has been reported for scams in Kenya.
       </p>
 
       <input
         type="text"
-        placeholder="Enter phone number..."
+        placeholder="Enter phone number (e.g. 0712345678)"
         value={phoneNumber}
         onChange={(e) => setPhoneNumber(e.target.value)}
       />
@@ -98,7 +104,6 @@ export default function VerifyNumber() {
 
       {result && (
         <div className="result-card">
-
           <h2>Verification Result</h2>
 
           <p>
@@ -125,6 +130,14 @@ export default function VerifyNumber() {
             {result.risk}
           </h3>
 
+          {result.risk !== "SAFE" && (
+            <button
+              className="report-btn"
+              onClick={reportNumber}
+            >
+              Report This Number
+            </button>
+          )}
         </div>
       )}
     </div>

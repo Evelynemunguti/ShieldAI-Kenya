@@ -52,3 +52,20 @@
   margin-bottom: 8px;
   text-decoration: none;
 }
+
+.report-btn {
+  margin-top: 20px;
+  background: #DC3545;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.report-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}

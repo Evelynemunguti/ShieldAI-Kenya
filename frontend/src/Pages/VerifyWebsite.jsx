@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import "./VerifyWebsite.css";
 
@@ -6,40 +7,73 @@ export default function VerifyWebsite() {
   const [result, setResult] = useState(null);
 
   const analyzeWebsite = () => {
-    let score = 0;
+    if (!website.trim()) {
+      alert("Please enter a website URL");
+      return;
+    }
+
+    let score = 5;
     let risk = "SAFE";
     const reasons = [];
 
-    const lowerSite = website.toLowerCase();
+    const lowerSite = website.toLowerCase().trim();
 
+    // 1. HTTPS check
     if (!lowerSite.startsWith("https://")) {
-      score += 30;
+      score += 25;
       reasons.push("Website is not using HTTPS");
     }
 
-    if (
-      lowerSite.includes("free-money") ||
-      lowerSite.includes("winner") ||
-      lowerSite.includes("claim-prize") ||
-      lowerSite.includes("gift")
-    ) {
-      score += 40;
-      reasons.push("Suspicious keywords detected in URL");
+    // 2. Scam keyword patterns
+    const scamKeywords = [
+      "free-money",
+      "winner",
+      "claim-prize",
+      "gift",
+      "get-rich",
+      "lottery",
+      "urgent-offer",
+      "bonus",
+      "mpesa",
+      "loan",
+      "approve-now",
+    ];
+
+    scamKeywords.forEach((word) => {
+      if (lowerSite.includes(word)) {
+        score += 15;
+        reasons.push(`Suspicious keyword detected: "${word}"`);
+      }
+    });
+
+    // 3. High-risk domains
+    const riskyDomains = [".xyz", ".tk", ".top", ".click", ".loan"];
+
+    riskyDomains.forEach((domain) => {
+      if (lowerSite.includes(domain)) {
+        score += 20;
+        reasons.push(`High-risk domain extension detected: ${domain}`);
+      }
+    });
+
+    // 4. Fake URL structure detection
+    if (lowerSite.includes("@")) {
+      score += 30;
+      reasons.push("Suspicious URL format (@ detected)");
     }
 
-    if (
-      lowerSite.includes(".xyz") ||
-      lowerSite.includes(".tk") ||
-      lowerSite.includes(".top")
-    ) {
-      score += 20;
-      reasons.push("High-risk domain extension detected");
+    if (lowerSite.length > 80) {
+      score += 10;
+      reasons.push("Unusually long URL (possible phishing)");
     }
 
-    if (score > 80) {
+    // 5. Final risk classification
+    if (score >= 80) {
       risk = "HIGH RISK";
-    } else if (score > 40) {
+    } else if (score >= 50) {
       risk = "SUSPICIOUS";
+    } else {
+      risk = "SAFE";
     }
 
     setResult({
@@ -48,6 +82,20 @@ export default function VerifyWebsite() {
       risk,
       reasons,
     });
+  };
+
+  const reportWebsite = () => {
+    alert("Website reported successfully!");
+
+    console.log({
+      reportType: "website",
+      website: result?.website,
+      risk: result?.risk,
+      score: result?.score,
+      source: "Verify Website",
+    });
+
+    // Later: n8n webhook integration
   };
 
   return (
@@ -60,7 +108,7 @@ export default function VerifyWebsite() {
 
       <input
         type="text"
-        placeholder="Enter website URL..."
+        placeholder="Enter website URL (e.g. https://example.com)"
         value={website}
         onChange={(e) => setWebsite(e.target.value)}
       />
@@ -95,10 +143,23 @@ export default function VerifyWebsite() {
           </h3>
 
           <ul>
-            {result.reasons.map((reason, index) => (
-              <li key={index}>{reason}</li>
-            ))}
+            {result.reasons.length > 0 ? (
+              result.reasons.map((reason, index) => (
+                <li key={index}>{reason}</li>
+              ))
+            ) : (
+              <li>No suspicious indicators found</li>
+            )}
           </ul>
+
+          {result.risk !== "SAFE" && (
+            <button
+              className="report-btn"
+              onClick={reportWebsite}
+            >
+              Report This Website
+            </button>
+          )}
 
         </div>
       )}

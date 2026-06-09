@@ -1,4 +1,5 @@
 
+
 import { useState } from "react";
 import "./Detector.css";
 
@@ -23,7 +24,7 @@ export default function Detector() {
       "limited time",
       "congratulations",
       "loan approved",
-      "password"
+      "password",
     ];
 
     const lowerMessage = message.toLowerCase();
@@ -60,7 +61,19 @@ export default function Detector() {
     setResult({
       score,
       verdict,
-      reasons
+      reasons,
+    });
+  };
+
+  const reportScam = () => {
+    alert("Scam reported successfully!");
+
+    console.log({
+      reportType: "message",
+      content: message,
+      score: result?.score,
+      verdict: result?.verdict,
+      source: "Detector",
     });
   };
 
@@ -69,7 +82,7 @@ export default function Detector() {
       <h1>AI Scam Detector</h1>
 
       <p>
-        Paste a suspicious SMS, email, WhatsApp message
+        Paste a suspicious SMS, email, WhatsApp message,
         or social media message.
       </p>
 
@@ -79,13 +92,12 @@ export default function Detector() {
         onChange={(e) => setMessage(e.target.value)}
       />
 
-      <button onClick={analyzeMessage}>
+      <button className="analyze-btn" onClick={analyzeMessage}>
         Analyze Scam
       </button>
 
       {result && (
         <div className="result-card">
-
           <h2>Scam Shield Score</h2>
 
           <div className="score">
@@ -95,11 +107,23 @@ export default function Detector() {
           <h3>{result.verdict}</h3>
 
           <ul>
-            {result.reasons.map((reason, index) => (
-              <li key={index}>{reason}</li>
-            ))}
+            {result.reasons.length > 0 ? (
+              result.reasons.map((reason, index) => (
+                <li key={index}>{reason}</li>
+              ))
+            ) : (
+              <li>No suspicious indicators found.</li>
+            )}
           </ul>
 
+          {result.verdict !== "SAFE" && (
+            <button
+              className="report-btn"
+              onClick={reportScam}
+            >
+              Report This Scam
+            </button>
+          )}
         </div>
       )}
     </div>
