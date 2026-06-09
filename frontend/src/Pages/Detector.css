@@ -6,6 +6,7 @@
 
 .detector-page h1{
   color:#0A2342;
+  font-size: clamp(2rem, 5vw, 4rem);
 }
 
 
@@ -68,4 +69,17 @@
 .report-btn:hover {
   transform: translateY(-2px);
   opacity: 0.95;
+}
+
+.ai-explanation {
+  margin-top: 15px;
+  padding: 15px;
+  background: rgba(255, 200, 87, 0.15);
+  border-left: 4px solid #FFC857;
+  border-radius: 10px;
+}
+
+.ai-explanation h4 {
+  margin-bottom: 8px;
+  color: #0A2342;
 }

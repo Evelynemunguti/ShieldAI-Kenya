@@ -36,3 +36,42 @@
   color: #DC3545;
   font-weight: bold;
 }
+
+.score {
+font-size: 34px;
+font-weight: bold;
+color: #DC3545;
+margin: 15px 0;
+}
+
+.ai-explanation {
+margin-top: 15px;
+padding: 15px;
+border-left: 4px solid #FFC857;
+background: rgba(255, 200, 87, 0.15);
+border-radius: 10px;
+}
+
+.ai-explanation h4 {
+margin-bottom: 8px;
+color: #0A2342;
+}
+
+.website-result {
+margin-top: 30px;
+background: white;
+padding: 25px;
+border-radius: 15px;
+box-shadow: 0 5px 20px rgba(0,0,0,.08);
+}
+
+.website-result ul {
+margin-top: 15px;
+padding-left: 20px;
+text-decoration: none;
+}
+
+.website-result li {
+margin-bottom: 8px;
+text-decoration: none;
+}

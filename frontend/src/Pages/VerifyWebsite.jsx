@@ -3,166 +3,257 @@ import { useState } from "react";
 import "./VerifyWebsite.css";
 
 export default function VerifyWebsite() {
-  const [website, setWebsite] = useState("");
-  const [result, setResult] = useState(null);
+const [website, setWebsite] = useState("");
+const [result, setResult] = useState(null);
 
-  const analyzeWebsite = () => {
-    if (!website.trim()) {
-      alert("Please enter a website URL");
-      return;
-    }
+const analyzeWebsite = () => {
+if (!website.trim()) {
+alert("Please enter a website URL");
+return;
+}
 
-    let score = 5;
-    let risk = "SAFE";
-    const reasons = [];
 
-    const lowerSite = website.toLowerCase().trim();
+const url = website.toLowerCase().trim();
 
-    // 1. HTTPS check
-    if (!lowerSite.startsWith("https://")) {
-      score += 25;
-      reasons.push("Website is not using HTTPS");
-    }
+let score = 0;
+let verdict = "SAFE";
+let attackType = "Unknown";
+let confidence = "Low";
 
-    // 2. Scam keyword patterns
-    const scamKeywords = [
-      "free-money",
-      "winner",
-      "claim-prize",
-      "gift",
-      "get-rich",
-      "lottery",
-      "urgent-offer",
-      "bonus",
-      "mpesa",
-      "loan",
-      "approve-now",
-    ];
+const reasons = [];
 
-    scamKeywords.forEach((word) => {
-      if (lowerSite.includes(word)) {
-        score += 15;
-        reasons.push(`Suspicious keyword detected: "${word}"`);
-      }
-    });
+// HTTPS Check
+if (!url.startsWith("https://")) {
+  score += 25;
+  reasons.push("Website is not using HTTPS");
+}
 
-    // 3. High-risk domains
-    const riskyDomains = [".xyz", ".tk", ".top", ".click", ".loan"];
+// Scam Keywords
+const scamKeywords = [
+  "winner",
+  "claim",
+  "prize",
+  "gift",
+  "bonus",
+  "free-money",
+  "loan",
+  "approve-now",
+  "urgent",
+  "reward",
+  "crypto-profit",
+  "investment",
+  "double-money",
+];
 
-    riskyDomains.forEach((domain) => {
-      if (lowerSite.includes(domain)) {
-        score += 20;
-        reasons.push(`High-risk domain extension detected: ${domain}`);
-      }
-    });
+scamKeywords.forEach((keyword) => {
+  if (url.includes(keyword)) {
+    score += 15;
+    reasons.push(`Suspicious keyword detected: "${keyword}"`);
+  }
+});
 
-    // 4. Fake URL structure detection
-    if (lowerSite.includes("@")) {
-      score += 30;
-      reasons.push("Suspicious URL format (@ detected)");
-    }
+// High Risk Domains
+const riskyDomains = [
+  ".xyz",
+  ".tk",
+  ".top",
+  ".click",
+  ".loan",
+  ".gq",
+  ".buzz",
+];
 
-    if (lowerSite.length > 80) {
-      score += 10;
-      reasons.push("Unusually long URL (possible phishing)");
-    }
+riskyDomains.forEach((domain) => {
+  if (url.includes(domain)) {
+    score += 20;
+    reasons.push(`High-risk domain extension detected: ${domain}`);
+  }
+});
 
-    // 5. Final risk classification
-    if (score >= 80) {
-      risk = "HIGH RISK";
-    } else if (score >= 50) {
-      risk = "SUSPICIOUS";
-    } else {
-      risk = "SAFE";
-    }
+// URL Tricks
+if (url.includes("@")) {
+  score += 30;
+  reasons.push("Suspicious @ symbol detected");
+}
 
-    setResult({
-      website,
-      score,
-      risk,
-      reasons,
-    });
-  };
+if (url.length > 80) {
+  score += 15;
+  reasons.push("Very long URL detected");
+}
 
-  const reportWebsite = () => {
-    alert("Website reported successfully!");
+// Excessive Hyphens
+const hyphenCount = (url.match(/-/g) || []).length;
 
-    console.log({
-      reportType: "website",
-      website: result?.website,
-      risk: result?.risk,
-      score: result?.score,
-      source: "Verify Website",
-    });
+if (hyphenCount >= 3) {
+  score += 15;
+  reasons.push("Excessive hyphen usage detected");
+}
 
-    // Later: n8n webhook integration
-  };
+// Impersonation Detection
+const brands = [
+  "mpesa",
+  "equity",
+  "kcb",
+  "paypal",
+  "facebook",
+  "instagram",
+  "google",
+  "amazon",
+  "microsoft",
+];
 
-  return (
-    <div className="website-page">
-      <h1>Verify Website</h1>
+brands.forEach((brand) => {
+  if (
+    url.includes(brand) &&
+    !url.endsWith(".com") &&
+    !url.endsWith(".co.ke")
+  ) {
+    score += 30;
+
+    attackType = "Brand Impersonation";
+
+    reasons.push(
+      `Possible impersonation of ${brand}`
+    );
+  }
+});
+
+// Attack Classification
+if (
+  url.includes("login") ||
+  url.includes("verify") ||
+  url.includes("password")
+) {
+  attackType = "Phishing Website";
+}
+
+if (
+  url.includes("loan") ||
+  url.includes("mpesa")
+) {
+  attackType = "Financial Scam";
+}
+
+if (
+  url.includes("winner") ||
+  url.includes("prize")
+) {
+  attackType = "Prize Scam";
+}
+
+// Website Format Validation
+const validWebsitePattern =
+  /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}$/;
+
+if (!validWebsitePattern.test(url)) {
+  score += 25;
+  reasons.push(
+    "Website format appears invalid"
+  );
+}
+
+// Final Scoring
+if (score > 100) score = 100;
+
+if (score >= 75) {
+  verdict = "HIGH RISK";
+  confidence = "High";
+} else if (score >= 45) {
+  verdict = "SUSPICIOUS";
+  confidence = "Medium";
+} else if (score >= 20) {
+  verdict = "LOW RISK";
+  confidence = "Low";
+}
+
+// Explainable AI
+let explanation = "";
+
+if (verdict === "HIGH RISK") {
+  explanation =
+    "This website exhibits multiple indicators commonly associated with phishing, impersonation, or scam campaigns.";
+} else if (verdict === "SUSPICIOUS") {
+  explanation =
+    "Several warning signs were detected. Verify the ownership and legitimacy of this website before interacting with it.";
+} else if (verdict === "LOW RISK") {
+  explanation =
+    "Minor concerns were identified, but there is insufficient evidence to classify this website as malicious.";
+} else {
+  explanation =
+    "No major scam indicators were detected. ShieldAI cannot verify website ownership or existence in frontend-only mode.";
+}
+
+setResult({
+  website,
+  score,
+  verdict,
+  attackType,
+  confidence,
+  explanation,
+  reasons,
+});
+
+};
+
+return ( <div className="website-page"> <h1>Verify Website</h1>
+
+  <p>
+    Analyze a website URL for phishing, fraud,
+    impersonation, and scam indicators.
+  </p>
+
+  <input
+    type="text"
+    placeholder="Enter website URL"
+    value={website}
+    onChange={(e) => setWebsite(e.target.value)}
+  />
+
+  <button onClick={analyzeWebsite}>
+    Analyze Website
+  </button>
+
+  {result && (
+    <div className="website-result">
+
+      <h2>ShieldAI Analysis</h2>
+
+      <div className="score">
+        {result.score}%
+      </div>
+
+      <h3>{result.verdict}</h3>
 
       <p>
-        Check whether a website may be unsafe or fraudulent.
+        <strong>Attack Type:</strong>{" "}
+        {result.attackType}
       </p>
 
-      <input
-        type="text"
-        placeholder="Enter website URL (e.g. https://example.com)"
-        value={website}
-        onChange={(e) => setWebsite(e.target.value)}
-      />
+      <p>
+        <strong>Confidence:</strong>{" "}
+        {result.confidence}
+      </p>
 
-      <button onClick={analyzeWebsite}>
-        Analyze Website
-      </button>
+      <div className="ai-explanation">
+        <h4>AI Explanation</h4>
+        <p>{result.explanation}</p>
+      </div>
 
-      {result && (
-        <div className="website-result">
+      <h4>Detected Signals</h4>
 
-          <h2>Website Analysis</h2>
+      <ul>
+        {result.reasons.length > 0 ? (
+          result.reasons.map((reason, index) => (
+            <li key={index}>{reason}</li>
+          ))
+        ) : (
+          <li>No suspicious indicators found.</li>
+        )}
+      </ul>
 
-          <p>
-            <strong>Website:</strong> {result.website}
-          </p>
-
-          <p>
-            <strong>Risk Score:</strong> {result.score}%
-          </p>
-
-          <h3
-            className={
-              result.risk === "HIGH RISK"
-                ? "high-risk"
-                : result.risk === "SUSPICIOUS"
-                ? "medium-risk"
-                : "safe"
-            }
-          >
-            {result.risk}
-          </h3>
-
-          <ul>
-            {result.reasons.length > 0 ? (
-              result.reasons.map((reason, index) => (
-                <li key={index}>{reason}</li>
-              ))
-            ) : (
-              <li>No suspicious indicators found</li>
-            )}
-          </ul>
-
-          {result.risk !== "SAFE" && (
-            <button
-              className="report-btn"
-              onClick={reportWebsite}
-            >
-              Report This Website
-            </button>
-          )}
-
-        </div>
-      )}
     </div>
-  );
+  )}
+</div>
+
+);
 }

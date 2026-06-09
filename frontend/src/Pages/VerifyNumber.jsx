@@ -12,6 +12,10 @@ export default function VerifyNumber() {
       return;
     }
 
+    let score = 0;
+    let reasons = [];
+    let attackType = "Unknown";
+
     const scamNumbers = [
       "0712345678",
       "0700000000",
@@ -19,81 +23,111 @@ export default function VerifyNumber() {
       "0111111111",
     ];
 
-    const suspiciousPrefixes = ["0700", "0712"];
+    const suspiciousPrefixes = [
+      "0700",
+      "0712",
+      "0111",
+    ];
 
-    let risk = "SAFE";
-    let reports = 0;
-    let score = 5;
-    const reasons = [];
-
-    // 1. Exact scam numbers
+    // Known scam number
     if (scamNumbers.includes(phoneNumber)) {
-      risk = "HIGH RISK";
-      reports = Math.floor(Math.random() * 50) + 10;
-      score = 90;
-      reasons.push("Known scam number");
+      score += 70;
+      reasons.push("Number appears in scam database");
+      attackType = "Known Scam Source";
     }
 
-    // 2. Prefix check
+    // Suspicious prefixes
     if (
-      suspiciousPrefixes.some((prefix) =>
+      suspiciousPrefixes.some(prefix =>
         phoneNumber.startsWith(prefix)
       )
     ) {
-      risk = "SUSPICIOUS";
-      score = Math.max(score, 50);
-      reasons.push("Suspicious number prefix");
+      score += 20;
+      reasons.push("Suspicious number prefix detected");
     }
 
-    // 3. Length check
+    // Invalid format
+    if (!/^\d+$/.test(phoneNumber)) {
+      score += 30;
+      reasons.push("Contains invalid characters");
+    }
+
+    // Length analysis
     if (
       phoneNumber.length < 10 ||
       phoneNumber.length > 12
     ) {
-      risk = "SUSPICIOUS";
-      score = Math.max(score, 60);
+      score += 30;
       reasons.push("Abnormal phone number length");
     }
 
-    // 4. Repeated digits
-    if (/(\d)\1{6,}/.test(phoneNumber)) {
-      risk = "HIGH RISK";
-      score = 95;
-      reasons.push("Repetitive digit pattern detected");
+    // Repeated digits
+    if (/(\d)\1{5,}/.test(phoneNumber)) {
+      score += 40;
+      reasons.push("Repeated digit pattern detected");
+      attackType = "Spoofed Number";
+    }
+
+    // Sequential patterns
+    if (
+      phoneNumber.includes("123456") ||
+      phoneNumber.includes("000000") ||
+      phoneNumber.includes("111111")
+    ) {
+      score += 25;
+      reasons.push("Artificial sequence pattern detected");
+    }
+
+    if (score > 100) score = 100;
+
+    let verdict = "SAFE";
+
+    if (score >= 75) {
+      verdict = "HIGH RISK";
+    } else if (score >= 45) {
+      verdict = "SUSPICIOUS";
+    } else if (score >= 20) {
+      verdict = "LOW RISK";
+    }
+
+    let explanation = "";
+
+    if (verdict === "HIGH RISK") {
+      explanation =
+        "This number exhibits multiple indicators commonly associated with scam activity.";
+    } else if (verdict === "SUSPICIOUS") {
+      explanation =
+        "Some unusual patterns were detected. Exercise caution before interacting with this number.";
+    } else if (verdict === "LOW RISK") {
+      explanation =
+        "Minor warning signs were detected, but there is insufficient evidence to classify this number as dangerous.";
+    } else {
+      explanation =
+        "No major risk indicators were detected based on available analysis.";
     }
 
     setResult({
       number: phoneNumber,
-      risk,
-      reports,
       score,
+      verdict,
+      attackType,
+      explanation,
       reasons,
-    });
-  };
-
-  const reportNumber = () => {
-    alert("Number reported successfully!");
-
-    console.log({
-      reportType: "phone",
-      number: result?.number,
-      risk: result?.risk,
-      score: result?.score,
-      source: "Verify Number",
     });
   };
 
   return (
     <div className="verify-page">
+
       <h1>Verify Phone Number</h1>
 
       <p>
-        Check whether a phone number has been reported for scams in Kenya.
+        Analyze a phone number for potential scam indicators.
       </p>
 
       <input
         type="text"
-        placeholder="Enter phone number (e.g. 0712345678)"
+        placeholder="Enter phone number"
         value={phoneNumber}
         onChange={(e) => setPhoneNumber(e.target.value)}
       />
@@ -104,42 +138,40 @@ export default function VerifyNumber() {
 
       {result && (
         <div className="result-card">
-          <h2>Verification Result</h2>
+
+          <h2>ShieldAI Analysis</h2>
+
+          <div className="score">
+            {result.score}%
+          </div>
+
+          <h3>{result.verdict}</h3>
 
           <p>
-            <strong>Number:</strong> {result.number}
+            <strong>Attack Type:</strong>{" "}
+            {result.attackType}
           </p>
 
-          <p>
-            <strong>Reports:</strong> {result.reports}
-          </p>
+          <div className="ai-explanation">
+            <h4>AI Explanation</h4>
+            <p>{result.explanation}</p>
+          </div>
 
-          <p>
-            <strong>Risk Score:</strong> {result.score}%
-          </p>
+          <h4>Detected Signals</h4>
 
-          <h3
-            className={
-              result.risk === "HIGH RISK"
-                ? "high-risk"
-                : result.risk === "SUSPICIOUS"
-                ? "medium-risk"
-                : "safe"
-            }
-          >
-            {result.risk}
-          </h3>
+          <ul>
+            {result.reasons.length > 0 ? (
+              result.reasons.map((reason, index) => (
+                <li key={index}>{reason}</li>
+              ))
+            ) : (
+              <li>No suspicious indicators found.</li>
+            )}
+          </ul>
 
-          {result.risk !== "SAFE" && (
-            <button
-              className="report-btn"
-              onClick={reportNumber}
-            >
-              Report This Number
-            </button>
-          )}
         </div>
       )}
+
     </div>
   );
 }
